@@ -1,5 +1,4 @@
 import random
-from collections import deque
 
 # Create grid with random obstacles
 def create_grid(n):
@@ -11,37 +10,37 @@ def create_grid(n):
         grid.append(row)
     return grid
 
-# Print Matrix
+
+# Print grid
 def print_grid(grid):
-    print("\nGenerated N x N Matrix:")
+    print("\nGenerated Grid:")
     for row in grid:
         print(row)
 
-# BFS traversal
-def bfs(grid, start, goal):
+
+# DFS traversal
+def dfs(grid, current, goal, visited):
     n = len(grid)
-    queue = deque([start])
-    visited = set([start])
+    x, y = current
 
-    directions = [(-1,0),(1,0),(0,-1),(0,1)]
+    if current == goal:
+        print("Goal Reached!")
+        return True
 
-    while queue:
-        x, y = queue.popleft()
+    visited.add(current)
 
-        if (x, y) == goal:
-            print("Goal Reached!")
-            return True
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
-        for dx, dy in directions:
-            nx, ny = x+dx, y+dy
+    for dx, dy in directions:
+        nx = x + dx
+        ny = y + dy
 
-            if 0<=nx<n and 0<=ny<n:
-                # Check FREE cell (1)
-                if grid[nx][ny] == 1 and (nx,ny) not in visited:
-                    queue.append((nx,ny))
-                    visited.add((nx,ny))
+        if 0 <= nx < n and 0 <= ny < n:
+            # Check FREE cell (1) instead of 0
+            if grid[nx][ny] == 1 and (nx, ny) not in visited:
+                if dfs(grid, (nx, ny), goal, visited):
+                    return True
 
-    print("No Path Found")
     return False
 
 
@@ -62,4 +61,7 @@ goal = (gx, gy)
 grid[sx][sy] = 1
 grid[gx][gy] = 1
 
-bfs(grid, start, goal)
+visited = set()
+
+if not dfs(grid, start, goal, visited):
+    print("No Path Found")

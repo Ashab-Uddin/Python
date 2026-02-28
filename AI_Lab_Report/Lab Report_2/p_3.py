@@ -2,7 +2,8 @@ import random
 from collections import deque
 
 def create_grid(n):
-    return [[random.choice([0,0,0,1]) for _ in range(n)] for _ in range(n)]
+    # More free cells (1), fewer obstacles (0)
+    return [[random.choice([1,1,1,0]) for _ in range(n)] for _ in range(n)]
 
 def print_grid(grid):
     print("\nGenerated Grid:")
@@ -27,7 +28,8 @@ def bfs_with_parent(grid, start, goal):
             nx, ny = x+dx, y+dy
 
             if 0<=nx<n and 0<=ny<n:
-                if grid[nx][ny]==0 and (nx,ny) not in visited:
+                # Check FREE cell (1)
+                if grid[nx][ny] == 1 and (nx,ny) not in visited:
                     queue.append((nx,ny))
                     visited.add((nx,ny))
                     parent[(nx,ny)] = (x,y)
@@ -62,8 +64,9 @@ gy = int(input("Enter Goal Y: "))
 start = (sx, sy)
 goal = (gx, gy)
 
-grid[sx][sy] = 0
-grid[gx][gy] = 0
+# Ensure start and goal are free (1)
+grid[sx][sy] = 1
+grid[gx][gy] = 1
 
 parent = bfs_with_parent(grid, start, goal)
 
